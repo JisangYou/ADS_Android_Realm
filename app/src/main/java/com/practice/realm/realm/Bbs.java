@@ -8,7 +8,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by JisangYou on 2017-11-17.
  */
 
-public class Bbs extends RealmObject {
+public class Bbs extends RealmObject { // RealmObject를 상속받는다.
 
     @PrimaryKey
     private int no;

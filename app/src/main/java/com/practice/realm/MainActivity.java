@@ -19,105 +19,100 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        create();
-        read();
-        update();
-        delete();
     }
-
 
     public void create() {
         /* 동기로 데이터 입력 */
         // 1. 인스턴스 생성 - connection
         Realm realm = Realm.getDefaultInstance();
-        //2. 트랜젝션 시작
+        // 2. 트랜잭션 시작
         realm.beginTransaction();
-
-
+        // 테이블 처리
+        // 자동증가 로직처럼 사용하기
         Number maxValue = realm.where(Bbs.class).max("no");
-        int no = (maxValue != null) ? maxValue.intValue() + 1 : 1;
+        int no = (maxValue!=null) ? maxValue.intValue() +1:1;
+        // 프라이머리 키는 class 뒤에 설정해준다.
         Bbs bbs = realm.createObject(Bbs.class, no); // 레코드 한개 생성
-        bbs.setNo(no);
         bbs.setTitle("제목 1");
-        bbs.setContent("내용을 여기\n 아싸라비아~~~");
+        bbs.setContent("내용을 여기에넣는다. \n  ");
         bbs.setDate(System.currentTimeMillis());
         realm.commitTransaction();
-        //테이블에 한개의 레코드셋이 들어간다.
 
-//        /* 비동기로 데이터 입력 */
-//        RealmAsyncTask transaction = realm.executeTransactionAsync(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm asyncrealm) {
-//                Bbs bbs = asyncrealm.createObject(Bbs.class);
-//                bbs.setNo(2);
-//                bbs.setTitle("제목 2");
-//                bbs.setContent("내용2을 여기\n 아싸라비아~~~");
-//                bbs.setDate(System.currentTimeMillis());
-//            }
-//        }, new Realm.Transaction.OnSuccess(){
-//            @Override
-//            public void onSuccess() {
-//                afterCreation();
-//            }
-//        });
-//    }
-
-
-    /* 비동기로 데이터 입력 */
+        /* 비동기로 데이터 입력 */
         RealmAsyncTask transaction = realm.executeTransactionAsync(
                 asyncRealm -> {
                     Bbs bbs2 = asyncRealm.createObject(Bbs.class);
-                    bbs.setNo(2);
-                    bbs.setTitle("제목 2");
-                    bbs.setContent("내용2을 여기\n 아싸라비아~~~");
-                    bbs.setDate(System.currentTimeMillis());
+                    bbs2.setNo(2);
+                    bbs2.setTitle("제목 2");
+                    bbs2.setContent("내용을 여기에넣는다. \n  ");
+                    bbs2.setDate(System.currentTimeMillis());
+                }
+                , () -> { // 성공시 진행
+                    afterCreation(); // 데이터 베이스 처리가 끝나고 호출될 함수를 지정
+                }
+                , error -> {// 에러처리
 
                 }
-                , () -> {
-                    afterCreation();
-                }
-
         );
-    }
 
-    private void afterCreation() {
-        Toast.makeText(this, "데이터가 입력되었습니다.", Toast.LENGTH_SHORT).show();
+        RealmAsyncTask transaction2 = realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
+    }
+    public void afterCreation() {
+
     }
 
     public void read() {
         Realm realm = Realm.getDefaultInstance();
         RealmQuery<Bbs> query = realm.where(Bbs.class);
-        query.equalTo("no", 1);
+        query.equalTo("no",1);
         query.or();
-        query.equalTo("title", "제목1");
-        // select * from bbs where no = 1 or title = '제목 1'
+        query.equalTo("title", "제목 1");
+        // select * from bbs where no = 1 or title = '제목1'
         /* 동기로 질의 */
-        RealmResults<Bbs> result1 = query.findAll();
-        Bbs bbsFirst = result1.first();
-        //질의 후 데이터 수정
-        realm.beginTransaction();
-        bbsFirst.setTitle("수정된 제목");
+        RealmResults<Bbs> result1 = query.findAll(); // 결과는 array로 가져오게 된다.
 
-        realm.commitTransaction();
 
-        /* 비동기로 질의 */
+        /* 비동기로 질의 */ // 비동기인 경우는 먼저 찍히기 때문에 콜백이 필요
         query.findAllAsync().addChangeListener(new RealmChangeListener<RealmResults<Bbs>>() {
             @Override
             public void onChange(RealmResults<Bbs> bbs) {
-
-                Bbs bbsFirst = bbs.first();
-                bbsFirst.setTitle("수정된 제목");
+                // 결과처리
             }
         });
-
-
     }
 
-    public void update() {
+    public void update() { //read 후에 update를 실행한다.
 
-        // 1. 수정할 객체를 가져오거나 생성
+        // 동기로 하는 경우
+        Realm realm3 = Realm.getDefaultInstance();
+        RealmQuery<Bbs> query2 = realm3.where(Bbs.class);
+        query2.equalTo("no",1);
+        query2.or();
+        query2.equalTo("title", "제목 1");
+        // select * from bbs where no = 1 or title = '제목1'
+        /* 동기로 질의 */
+        RealmResults<Bbs> result2 = query2.findAll();
+        Bbs bbsFirst = result2.first();
+        realm3.beginTransaction();
+        bbsFirst.setTitle("수정된 제목");
+        realm3.commitTransaction();
+
+        // 비동기1
         Bbs bbs = new Bbs();
         bbs.setNo(1);
         bbs.setTitle("제목");
@@ -129,22 +124,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 비동기2
+        Realm realm2 = Realm.getDefaultInstance();
+        RealmQuery<Bbs> query = realm2.where(Bbs.class);
+        query.equalTo("no",1);
+        query.findAllAsync().addChangeListener(new RealmChangeListener<RealmResults<Bbs>>() {
+            @Override
+            public void onChange(RealmResults<Bbs> bbs) {
+                Bbs bbs1 = bbs.first();
+                bbs1.setTitle("수정");
+            }
+        });
     }
 
     public void delete() {
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<Bbs> result = realm.where(Bbs.class).findAll();
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                result.deleteAllFromRealm();// 검색결과의 첫번째 삭제
+                result.deleteFirstFromRealm(); // 검색결과의 첫번째 삭제
 
-                Bbs bbs = result.get(2); //특정 행 삭제
+                Bbs bbs = result.get(2); // 특정 행 삭제
                 bbs.deleteFromRealm();
-                result.deleteFromRealm(2);
+                // result.deleteFromRealm(2); // 위와 동일
 
-                result.deleteAllFromRealm(); // 검색결과 전체 삭제제
+                result.deleteAllFromRealm(); // 검색결과 전체삭제
             }
         });
     }
