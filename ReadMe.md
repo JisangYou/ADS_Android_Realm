@@ -253,12 +253,24 @@ public class Bbs extends RealmObject { // RealmObject를 상속받는다.
 
 ### SqLlite와 비교 및 Realm 플랫폼 흐름도
 
-![비교](https://images.contentful.com/emmiduwd41v7/5GfJdYfc5O0kgKMe2CiOuQ/474ebb56601bbc6961ff61d9df6a1b9c/rwt-seoul-intro-steps.png)
-![비교2](https://tosslab.github.io/assets/media/post_images/sqlite_vs_realm.png)
-![비교3](https://images.contentful.com/emmiduwd41v7/524y0hIdzy0UIEoKuwgWSi/95d957e2d6e8f582cfbd84e345467af6/anatomy-realm-rmp.jpg)
+- Realm 특징 
 
-※ 아직 개인적으로 realm을 깊게 사용해보지 않았기때문에 성능평가 및 장,단점을 잘 모름. 추후에 Realm플랫폼 방식으로 사용을 고려중. 이유로는 restFul Api에서 생기는 문제점을 처리한다는 홍보때문에..
-[realm 사이트](https://academy.realm.io/kr/posts/best-practices-pain-points-mobile-networking-rest-api-failures/)
+![비교](https://images.contentful.com/emmiduwd41v7/5GfJdYfc5O0kgKMe2CiOuQ/474ebb56601bbc6961ff61d9df6a1b9c/rwt-seoul-intro-steps.png)
+
+- Realm 특징2
+
+![비교3](https://images.contentful.com/emmiduwd41v7/60BTgLPcd2KoeAOoAKk8mM/7ee98a218e3cb218265d75172ee1a421/rwt-seoul-rmp-architecture.png)
+
+- Realm과 Sqllite 비교
+
+![비교2](https://tosslab.github.io/assets/media/post_images/sqlite_vs_realm.png)
+
+
+
+※ 아직 개인적으로 realm을 깊게 사용해보지 않았기때문에 성능평가 및 장,단점을 잘 모르기에 사진으로 대체함. 
+- 추후에 서버도 학습을 하면서, realm 데이터 베이스 사용해 볼 예정.
+- restFul Api를 사용하면서 불편한 점이 있었는데 이 부분에 있어서 잘 해결했다고 함 ▽ 참고 사이트
+- [realm 사이트](https://academy.realm.io/kr/posts/best-practices-pain-points-mobile-networking-rest-api-failures/)
 
 ### 공식문서 예제 코드
 
