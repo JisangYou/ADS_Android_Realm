@@ -274,6 +274,8 @@ public class Bbs extends RealmObject { // RealmObject를 상속받는다.
 
 ### 공식문서 예제 코드
 
+- (추후 학습 후 업데이트 예정)
+
 ```Java
 // Define your model class by extending RealmObject
 public class Dog extends RealmObject {
